@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Pokedex</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */
+    .navbar {
+      margin-bottom: 50px;
+      border-radius: 0;
+    }
+
+    /* Remove the jumbotron's default bottom margin */
+    .jumbotron {
+      margin-bottom: 0;
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="jumbotron">
+    <div class="container text-center">
+      <h3>Test Pokedex</h3>
+      <p>Link a los Casos de uso</p>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">1-Traer Todos los Pokemon</div>
+          <div class="panel-footer"><a href="/traerTodos" target="_self"><button   type="button" href="/traerTodos" class="btn btn-primary">Ir</button>  </a></div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">2-Test Traer pokemon con su nombre,tipo y nivel ingresando el nombre</div>
+          <div class="panel-footer"><a href=/api/traerPokemonPorNombre/mostrar target="_self"><button   type="button" href="/api/traerPokemonPorNombre/mostrar" class="btn btn-primary">Ir</button>  </a></div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">3-Test Traer Habilidades y evoluciones, informacion del pokemon ingresando el nombre</div>
+          <div class="panel-footer"><a href="/api/traerHabilidadesYEvoluciones/mostrar" target="_self"><button   type="button" href="/api/traerHabilidadesYEvoluciones/mostrar" class="btn btn-primary">Ir</button>  </a></div>
+        </div>
+      </div>
+    </div>
+  </div><br>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">4-Test Actualizar informacion del Pokemon (tipo)</div>
+          <div class="panel-footer"><a href="/api/actualizarInformacionPokemonTipo/mostrar" target="_self"><button   type="button" href="/api/actualizarInformacionPokemonTipo/mostrar" class="btn btn-primary">Ir</button> </a> </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">5-Test traer informacion del pokemon ingresando el nombre</div>
+          <div class="panel-footer"><a href="/api/traerInformacionPokemonNombre/mostrar" target="_self"><button   type="button" href="/api/traerInformacionPokemonNombre/mostrar" class="btn btn-primary">Ir</button> </a> </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">6-Test Actualizar informacion del Pokemon (nivel), si me paso del nivel se
+          convierte en la evolucion</div>
+          <div class="panel-footer"><a href="/traerTodos" target="_self"><button   type="button" href="/traerTodos" class="btn btn-primary">Ir</button> </a> </div>
+        </div>
+      </div>
+    </div>
+  </div><br>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">7-Test Agregar pokemon</div>
+          <div class="panel-footer"><a href="/traerTodos" target="_self"><button   type="button" href="/traerTodos" class="btn btn-primary">Ir</button> </a> </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">8-Test Actualizar informacion del Pokemon (nombre)</div>
+          <div class="panel-footer"><a href="/traerTodos" target="_self"><button   type="button" href="/traerTodos" class="btn btn-primary">Ir</button> </a> </div>
+        </div>
+    </div>
+
+    </div><br><br>
+
+    <footer class="container-fluid text-center">
+      <p>Guillermo Obaya</p>
+
+    </footer>
+
+</body>
+
+</html>

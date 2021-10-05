@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+<head>
+  <title>Pokemon habilidades y evoluciones</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+</head>
+
+<script>
+  $(document).ready(function () {
+
+    $("#buscar").click(function () {
+      $(".ERROR").css("display", "none");
+      var nombrePokemon = $("#nombrePokemon").val();
+      var error = false;
+      if ($("#nombrePokemon").val() == "") {
+        $("#displayNombrePokemonError").css("display", "block");
+        error = true;
+      }
+      if (error == false) {
+        json = {
+          "nombrePokemon": nombrePokemon,
+        };
+        $.ajax({
+          url: '/api/traerHabilidadesYEvoluciones/mostrar',
+          type: 'POST',
+          dataType: 'json',
+          data: JSON.stringify(json),
+          contentType: "application/json",
+          success: function (data) {
+            if (data !=null){
+            $("#formulario").hide(1000);
+            $("#pokemonTable").css("display", "block");
+						for (let index = 0; index < data.length; index++) {
+							const element = data[index];
+							//llamamos la funcion para crear el pokemon en la tabla
+							createRow(element);
+						}
+            $("#botonera").css("display", "block");
+					}
+
+          },
+          error: function (response) {
+            $("#mensajeError").css("display", "block");
+          }
+        });
+
+
+      }
+    });
+
+  })
+
+
+  //creamos la row para insertar en tabla, despues de obtener los datos de la consulta rest
+  function createRow(pokemon) {
+    console.log(pokemon.nombrePokemon);
+    //construimos el html
+    var datos = "<tr><td>" + pokemon.nombrePokemon
+      + "</td><td>" + pokemon.nivelSiguienteEvolucion
+      + "</td><td>" + pokemon.ordenEvolucion
+      + "</td><td>" + pokemon.tipo1.tipo
+      + "</td><td>" + pokemon.tipo2.tipo + "</td><td>";
+
+    //iteramos habilidades
+    for (let index = 0; index < pokemon.habilidades.length; index++) {
+      const element = pokemon.habilidades[index];
+      datos += element.habilidad + "</br>"
+    }
+
+    datos += "</td><td>" + pokemon.pokemonRaza.idPokemonRaza + "</td><tr>";
+
+    //insertamois en dom
+    $("#pokemonTable").append(datos);
+
+  }
+
+
+</script>
+
+<div>
+  <h3 style="text-align:center">3-Traer habilidades y evoluciones, informacion del pokemon:</h3>
+</div>
+
+<div id="formulario">
+  <h4>Buscar pokemon</h4>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <p>Nombre del pokemon: <input class="form-control" id="nombrePokemon" type="text" name="nombrePokemon"
+          required="required"></p>
+      <label id="displayNombrePokemonError" class="ERROR" style="display: none;">Complete el campo nombre de
+        pokemon</label>
+    </div>
+  </div>
+
+
+  <p></p>
+  <button id="buscar" class="btn btn-primary">Buscar</button>
+  </div>
+
+</div>
+
+
+
+
+<div id="container" class="table-responsive text-center">
+  <table id="pokemonTable" class="table  table-bordered table-striped table" style="display: none;">
+    <tr>
+      <th>Nombre Pokemon</th>
+      <th>Nivel Siguiente Evolución</th>
+      <th>Orden Evolucion</th>
+      <th>Tipo 1</th>
+      <th>Tipo 2</th>
+      <th>Habilidades</th>
+      <th>PokemonRaza</th>
+    </tr>
+  </table>
+</div>
+
+
+<div id="botonera" style="display: none;">
+  <button onclick="javascript: history.go(-1)" class="btn btn-primary">Volver</button>
+  <button id="recargar" onClick="window.location.reload();" class="btn btn-primary">Recargar</button>
+</div>
+
+<div class="alert alert-warning" id='mensajeError' role="alert" style="display: none;"
+  onclick="document.getElementById('mensajeError').style.display = 'none'">
+  No se ha encontrado, nombre de pokemon invalido
+</div>
+
+
+
+</body>
+
+</html>
