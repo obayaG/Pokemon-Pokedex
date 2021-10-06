@@ -3,7 +3,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
 <head>
-  <title>Actualizar informacion del pokemon tipo</title>
+  <title>Actualizar informacion del pokemon nombre</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -28,20 +28,19 @@
         $("#displayNombrePokemonError").css("display", "block");
         error = true;
       }
-
       if (error == false) {
         json = {
           "nombrePokemon": nombrePokemon,
         };
         $.ajax({
-          url: '/api/actualizarInformacionPokemonTipo/mostrarPokemon',
+          url: '/api/actualizarInformacionPokemonNombre/mostrarPokemon',
           type: 'POST',
           dataType: 'json',
           data: JSON.stringify(json),
           contentType: "application/json",
           success: function (datosPokemon) {
             $("#formulario").hide(1000);
-            console.log(datosPokemon);
+            //console.log(datosPokemon);
             if (datosPokemon != null) {
               $("#pokemonTable").css("display", "block");
               //llamamos la funcion para crear el pokemon en la tabla
@@ -60,7 +59,7 @@
               datos += "</td><td>" + datosPokemon.pokemonRaza.idPokemonRaza + "</td><tr>";
               //insertamos en dom
               $("#pokemonTable").append(datos);
-              $("#tipos").css("display", "block");
+              $("#formulario-cambiarNombre").css("display", "block");
             }
 
           },
@@ -78,43 +77,32 @@
 
     $("#cambiar").click(function () {
       $(".ERROR").css("display", "none");
-      var nombrePokemon = $("#nombrePokemon").val();
-      var tipo1 = $("#tipo1").val();
-      var tipo2 = $("#tipo2").val();
+      var nombrePokemon=$("#nombrePokemon").val();
+      var nuevoNombrePokemon = $("#nuevoNombrePokemon").val();
       var error = false;
-      if ($("#nombrePokemon").val() == "") {
-        $("#displayNombrePokemonError").css("display", "block");
-        error = true;
-      }
-      if ($("#tipo1").val() == "") {
-        $("#displayTipo1").css("display", "block");
-        error = true;
-      }
-      if ($("#tipo2").val() == "") {
-        $("#displayTipo2").css("display", "block");
+      if ($("#nuevoNombrePokemon").val() == "") {
+        $("#displayNombrePokemonError2").css("display", "block");
         error = true;
       }
       if (error == false) {
         json = {
           "nombrePokemon": nombrePokemon,
-          "tipo1": tipo1,
-          "tipo2": tipo2,
+          "nuevoNombrePokemon": nuevoNombrePokemon,
         };
         $.ajax({
-          url: '/api/actualizarInformacionPokemonTipo/mostrar',
+          url: '/api/actualizarInformacionPokemonNombre/cambiar',
           type: 'POST',
           data: JSON.stringify(json),
           contentType: "application/json",
           success: function (response) {
             console.log("aca entro al success");
-            $("#tipos").hide(1000);
             $("#pokemonTable").hide(1000);
+            $("#formulario-cambiarNombre").hide(1000);
             $("#exitoActualizar").css("display", "block");
             $("#botonera").css("display", "block");
           },
           error: function (response) {
             console.log("aca hubo error");
-            $("#mensajeError2").css("display", "block");
           }
         });
 
@@ -128,32 +116,25 @@
 </script>
 
 <div>
-  <h3 style="text-align:center">4-Actualizar informacion del pokemon (Tipo):</h3>
+  <h3 style="text-align:center">8-Actualizar informacion del pokemon (Nombre):</h3>
 </div>
 
+
+
 <div id="formulario">
-  <h4>Buscar pokemon</h4>
-
-  <div class="form-row">
-
+  
+    <h4>Buscar pokemon</h4>
     <div class="form-group">
-      <p>Nombre del pokemon: <input class="form-control" id="nombrePokemon" type="text" name="nombrePokemon"
+      <p>Nombre del pokemon: <input  style="max-width: 50%" class="form-control" id="nombrePokemon" type="text" name="nombrePokemon"
           required="required"></p>
       <label id="displayNombrePokemonError" class="ERROR" style="display: none;">Complete el campo nombre de
         pokemon</label>
     </div>
 
-  </div>
+    <p></p>
+    <button id="buscar" class="btn btn-primary">Buscar</button>
 
-
-  <p></p>
-  <button id="buscar" class="btn btn-primary">Buscar</button>
 </div>
-
-
-
-
-
 
 
 
@@ -171,24 +152,18 @@
   </table>
 </div>
 
+<div id="formulario-cambiarNombre" style="display: none;">
+    <div class="form-group" >
+      <p>Nuevo Nombre del pokemon: <input style="max-width: 50%" class="form-control" id="nuevoNombrePokemon" type="text" name="nuevoNombrePokemon"
+          required="required"></p>
+      <label id="displayNombrePokemonError2" class="ERROR" style="display: none;">Complete el campo nombre de
+        pokemon</label>
+    </div>
 
-<div id="tipos" style="display: none;">
-  <p></p>
-  <p></p>
-  <div class="form-group">
-    <p>Tipo 1: <input class="form-control" id="tipo1" type="text" name="tipo1" required="required"></p>
-    <label id="displayTipo1" class="ERROR" style="display: none;">Complete el campo de tipo 1</label>
-  </div>
-
-  <div class="form-group">
-    <p>Tipo 2: <input class="form-control" id="tipo2" type="text" name="tipo2" required="required"></p>
-    <label id="displayTipo2" class="ERROR" style="display: none;">Complete el campo de tipo 2</label>
-  </div>
-
-  <p></p>
-  <button id="cambiar" class="btn btn-primary">Cambiar</button>
+    <p></p>
+    <button id="cambiar" class="btn btn-primary">Cambiar</button>
+  
 </div>
-
 
 
 <div class="alert alert-warning" id='mensajeError' role="alert" style="display: none;"
@@ -197,7 +172,7 @@
 </div>
 
 <div id="exitoActualizar" style="display: none;">
-  <h3>Tipo modificado</h3>
+  <h3>Nombre modificado</h3>
   <p></p>
 </div>
 
@@ -206,10 +181,6 @@
   <button id="recargar" onClick="window.location.reload();" class="btn btn-primary">Recargar</button>
 </div>
 
-<div class="alert alert-warning" id='mensajeError2' role="alert" style="display: none;"
-  onclick="document.getElementById('mensajeError2').style.display = 'none'">
-  No se ha encontrado, tipo de pokemon invalido
-</div>
 
 </body>
 

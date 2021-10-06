@@ -10,4 +10,6 @@ public class ViewRouteHelper {
 	public final static String TRAERHABILIDADESYEVOLUCIONES="home/traerHabilidadesYEvoluciones";
 	public final static String ACTUALIZARINFORMACIONPOKEMONTIPO="home/actualizarInformacionPokemonTipo";
 	public final static String TRAERINFORMACIONPOKEMONNOMBRE="home/traerInformacionPokemonNombre";
+	public final static String ACTUALIZARINFORMACIONPOKEMONNIVEL="home/actualizarInformacionPokemonNivel";
+	public final static String ACTUALIZARINFORMACIONPOKEMONNOMBRE="home/actualizarInformacionPokemonNombre";
 }

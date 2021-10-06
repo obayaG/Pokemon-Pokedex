@@ -1,5 +1,6 @@
 package com.certant.pokedex2.services.implementation;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,14 +39,18 @@ public class PokemonUsuarioService implements IPokemonUsuarioService{
 	}
 
 	@Override
-	public List<PokemonUsuario> traerListaPokemones(String nombre) throws Exception { //nombre del usuario
+	public Set<PokemonUsuario> traerListaPokemones(String nombre) throws Exception { //nombre del usuario
 		List<PokemonUsuario> lista= pokemonUsuarioRepository.traerListaPokemones(nombre);
 		if(lista.isEmpty())throw new Exception("El usuario no tiene pokemones");
-		return lista;
+		Set<PokemonUsuario> listaUsuario=  new HashSet<PokemonUsuario>();
+		for(PokemonUsuario d: lista) {
+			listaUsuario.add(d);
+		}
+		return listaUsuario;
 	}
 
 	@Override
-	public void actualizarNivelPokemon(String nombreABuscar, int nivel, String nombreUsuario) {
+	public void actualizarNivelPokemon(String nombreABuscar, int nivel, String nombreUsuario) throws Exception {
 		List<PokemonUsuario> lista=pokemonUsuarioRepository.traerListaPokemones(nombreUsuario);
 		PokemonUsuario dato = null;
 		PokemonDato d2 = null;
@@ -54,11 +59,13 @@ public class PokemonUsuarioService implements IPokemonUsuarioService{
 			for (PokemonUsuario u : lista) {
 				if (u.getPokemonDato().getNombrePokemon().equalsIgnoreCase(nombreABuscar)) {
 					dato = u;
-					System.out.println("\n datos antes \n"+dato);
 				}
 			}
-			pRaza=pokemonDatoRepository.traerPokemonDato(nombreABuscar);
-			if(pRaza!=null) {
+			if(dato==null) throw new Exception("No se ha encontrado ese pokemon, no pertenece a ese usuario");
+			System.out.println("\n datos antes \n"+dato);
+			if(nivel <= dato.getNivel())throw new Exception("Error, un pokemon no puede ser de menor nivel o igual que antes");
+			pRaza=pokemonDatoRepository.traerPokemonDato(nombreABuscar);		
+			if(pRaza!=null ) {
 				Set<PokemonDato> listaPokeRaza = pokemonDatoRepository.traerListaPokemones(pRaza.getPokemonRaza().getIdPokemonRaza());
 				if (!listaPokeRaza.isEmpty()) {
 					for (PokemonDato d : listaPokeRaza) {

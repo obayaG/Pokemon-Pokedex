@@ -17,7 +17,7 @@ public class Test3 {
 	@Autowired	
 	@Qualifier("pokemonUsuarioService")
 	private IPokemonUsuarioService pokemonUsuarioService;
-	
+	/*
 	@Test 
 	void testActualizarInformacionDelPokemonTipo(){
 		try{
@@ -31,12 +31,13 @@ public class Test3 {
 		}
 		
 	}
+	*/
 	
 	@Test 
 	public void testActualizarInformacionDelPokemonNivel(){
 		try{
 			System.out.println(" \n\n Test-Actualizar informacion del Pokemon (nivel)  ,si me paso del nivel se convierte en la evolucion\n \n");
-			pokemonUsuarioService.actualizarNivelPokemon("Pichu", 10, "Ash");
+			pokemonUsuarioService.actualizarNivelPokemon("Pikachu",22, "Ash");
 			
 		}
 		catch(Exception e){

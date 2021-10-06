@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+<head>
+  <title>Actualizar informacion del pokemon nivel</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+</head>
+
+<script>
+  $(document).ready(function () {
+
+    $("#buscar").click(function () {
+      hideElement(".ERROR");
+
+      var nombreUsuario = $("#nombreUsuario").val(),
+        error = false;
+
+      if ($("#nombreUsuario").val() == "") {
+        showElement("#displayNombreUsuarioError");
+        error = true;
+      }
+      if (error == false) {
+        json = {
+          "nombreUsuario": nombreUsuario,
+        };
+
+        //popula la lista con los pokemones del usuario
+        $.ajax({
+          url: '/api/actualizarInformacionPokemonNivel/mostrarPokemon',
+          type: 'POST',
+          dataType: 'json',
+          data: JSON.stringify(json),
+          contentType: "application/json",
+          success: function (datosPokemon) {
+            $("#formulario").hide(1000);
+            console.log(datosPokemon);
+            if (datosPokemon != null) {
+              showElement("#pokemonTable");
+              for (let index = 0; index < datosPokemon.length; index++) {
+                const element = datosPokemon[index];
+                //llamamos la funcion para crear el pokemon en la tabla
+                createRow(element);
+                createSelector(element);
+              }
+              showElement("#Ingreso-nivel");
+            }
+
+          },
+          error: function (response) {
+            showElement("#mensajeError");
+          }
+        });
+
+      }
+    });
+
+    // ------------- Utils
+
+    function showElement(element) {
+      $(element).css("display", "block");
+    }
+    function hideElement(element) {
+      $(element).css("display", "none");
+    }
+    // ------------- Utils End
+
+
+    // ------------- Display
+    function createSelector(pokemon) {
+      console.log("create selector");
+      var auxNombrePokemon = pokemon.pokemonDato.nombrePokemon;
+      $("#selectPokemon")[0].options.add(new Option(auxNombrePokemon, auxNombrePokemon));
+
+    }
+
+
+    //creamos la row para insertar en tabla, despues de obtener los datos de la consulta rest
+    function createRow(pokemon) {
+      console.log(pokemon.pokemonDato.nombrePokemon);
+      //construimos el html
+      var datos = "<tr><td>" + pokemon.pokemonDato.nombrePokemon
+        + "</td><td>" + pokemon.pokemonDato.nivelSiguienteEvolucion
+        + "</td><td>" + pokemon.pokemonDato.ordenEvolucion
+        + "</td><td>" + pokemon.pokemonDato.tipo1.tipo
+        + "</td><td>" + pokemon.pokemonDato.tipo2.tipo + "</td><td>";
+
+      //iteramos habilidades
+      for (let index = 0; index < pokemon.pokemonDato.habilidades.length; index++) {
+        const element = pokemon.pokemonDato.habilidades[index];
+        datos += element.habilidad + "</br>"
+      }
+
+      datos += "</td><td>" + pokemon.pokemonDato.pokemonRaza.idPokemonRaza + "</td>"
+        + "<td>" + pokemon.nivel + "</td>"
+        + "<td>" + pokemon.usuario.nombre + "</td> </tr>"
+      //insertamos en dom
+      $("#pokemonTable").append(datos);
+    }
+
+
+
+    $("#cambiar").click(function () {
+      $(".ERROR").css("display", "none");
+      var nombrePokemon = $("#selectPokemon")[0].selectedOptions[0].label;
+      var nombreUsuario = $("#nombreUsuario").val();
+      var nivel = $("#nivel").val();
+      var error = false;
+      if ($("#selectPokemon")[0].selectedOptions[0].label == "-") {
+        $("#displayNombrePokemonError").css("display", "block");
+        error = true;
+      }
+      if ($("#nombreUsuario").val() == "") {
+        $("#displayNombreUsuarioError").css("display", "block");
+        error = true;
+      }
+      if ($("#nivel").val() == "") {
+        $("#displayNivelError").css("display", "block");
+        error = true;
+      }
+      if (error == false) {
+        json = {
+          "nombrePokemon": nombrePokemon,
+          "nivel": nivel,
+          "nombreUsuario": nombreUsuario,
+        };
+        console.log(json);
+        $.ajax({
+          url: '/api/actualizarInformacionPokemonNivel/cambiarNivel',
+          type: 'POST',
+          data: JSON.stringify(json),
+          contentType: "application/json",
+          success: function (response) {
+            console.log("aca entro al success");
+            $("#Ingreso-nivel").hide(1000);
+            $("#pokemonTable").hide(1000);
+            $("#exitoActualizar").css("display", "block");
+            $("#botonera").css("display", "block");
+          },
+          error: function (response) {
+            console.log("aca hubo error");
+            $("#mensajeError2").css("display", "block");
+            /*   if(response.responseJSON.message.includes("nivel")){
+                      $("#displayError").css("display", "block");
+                      $("#displayError").html(response.responseJSON.message);
+                   }*/
+
+          }
+        });
+
+      }
+    });
+
+
+
+  });
+
+</script>
+
+<div>
+  <h3 style="text-align:center">6-Actualizar informacion del pokemon (Nivel):</h3>
+</div>
+
+<div id="formulario">
+  <h4>Buscar pokemones del usuario</h4>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <p>Nombre del usuario: <input class="form-control" id="nombreUsuario" type="text" name="nombreUsuario"
+          required="required"></p>
+      <label id="displayNombreUsuarioError" class="ERROR" style="display: none;">Complete el campo nombre de
+        usuario</label>
+    </div>
+  </div>
+
+
+  <p></p>
+  <button id="buscar" class="btn btn-primary">Buscar</button>
+</div>
+
+
+<div id="container" class="table-responsive text-center">
+  <table id="pokemonTable" class="table  table-bordered table-striped table" style="display: none;">
+    <tr>
+      <th>Nombre Pokemon</th>
+      <th>Nivel Siguiente Evolución</th>
+      <th>Orden Evolucion</th>
+      <th>Tipo 1</th>
+      <th>Tipo 2</th>
+      <th>Habilidades</th>
+      <th>PokemonRaza</th>
+      <th>Nivel</th>
+      <th>Usuario</th>
+    </tr>
+  </table>
+</div>
+
+
+<div id="Ingreso-nivel" style="display: none;">
+  </br>
+  </br>
+
+  <form style="max-width: 75%; position: relative; text-align: center;">
+    <div class="form-group row">
+      <label for="selectPokemon" class="col-4 col-form-label">Nombre de pokemon</label>
+      <div class="col-8">
+        <select id="selectPokemon" name="selectPokemon" class="custom-select" required="required">
+          <option value="">-</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="nivel" class="col-4 col-form-label">Nivel</label>
+      <div class="col-8">
+        <input id="nivel" name="nivel" type="text" required="required" class="form-control">
+        <label id="displayNivelError" class="ERROR" style="display: none;">Complete el campo de nivel</label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="offset-4 col-8">
+        <button id="cambiar" name="submit" type="button" class="btn btn-primary">Cambiar</button>
+      </div>
+    </div>
+  </form>
+
+
+
+</div>
+
+<div class="alert alert-warning" id='mensajeErrorNivel' role="alert" style="display: none;"
+  onclick="document.getElementById('mensajeErrorNivel').style.display = 'none'">
+  Nivel no puede ser menor al existente.
+</div>
+
+
+<div class="alert alert-warning" id='mensajeError' role="alert" style="display: none;"
+  onclick="document.getElementById('mensajeError').style.display = 'none'">
+  No se ha encontrado, nombre de usuario invalido
+</div>
+
+<div class="alert alert-warning" id='mensajeError2' role="alert" style="display: none;"
+  onclick="document.getElementById('mensajeError2').style.display = 'none'">
+  No se ha modificado, datos no correspondidos.
+</div>
+
+<div id="exitoActualizar" style="display: none;">
+  <h3>Nivel modificado</h3>
+  <p></p>
+</div>
+
+<div id="botonera" style="display: none;">
+  <button onclick="javascript: history.go(-1)" class="btn btn-primary">Volver</button>
+  <button id="recargar" onClick="window.location.reload();" class="btn btn-primary">Recargar</button>
+</div>
+
+
+</body>
+
+</html>
