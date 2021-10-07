@@ -12,4 +12,5 @@ public class ViewRouteHelper {
 	public final static String TRAERINFORMACIONPOKEMONNOMBRE="home/traerInformacionPokemonNombre";
 	public final static String ACTUALIZARINFORMACIONPOKEMONNIVEL="home/actualizarInformacionPokemonNivel";
 	public final static String ACTUALIZARINFORMACIONPOKEMONNOMBRE="home/actualizarInformacionPokemonNombre";
+	public final static String AGREGARPOKEMON="home/agregarPokemon";
 }

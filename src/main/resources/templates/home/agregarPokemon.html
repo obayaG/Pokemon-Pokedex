@@ -1,48 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://github.com/DubFriend/jquery.repeater/blob/master/jquery.repeater.js"  crossorigin="anonymous"></script>
 
 <head>
-	<title>TraerNombrePokemon</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-		crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-		crossorigin="anonymous"></script>
+  <title>TraerNombrePokemon</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.js"
+    integrity="sha512-bZAXvpVfp1+9AUHQzekEZaXclsgSlAeEnMJ6LfFAvjqYUVZfcuVXeQoN5LhD7Uw0Jy4NCY9q3kbdEXbwhZUmUQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </head>
 
+<script>
+  $(document).ready(function () {
+    function getRefs(el) {
+      let result = {};
+
+      [...el.querySelectorAll('[data-ref]')]
+        .forEach(ref => {
+          result[ref.dataset.ref] = ref;
+        });
+
+      return result;
+    }
+
+    function getProps(el) {
+      return JSON.parse(el.dataset.props);
+    }
+
+    function createFromHTML(html = '') {
+      let element = document.createElement(null);
+      element.innerHTML = html;
+      return element.firstElementChild;
+    }
+
+    function fieldRepeaterComponent(el) {
+      const props = getProps(el);
+      const refs = getRefs(el);
+
+      let rowNumber = 1;
+
+      function renderRow() {
+        return `
+      <li class="repeatable-field__row">
+        <div class="repeatable-field__row-wrap">
+          <input
+              class="repeatable-field__input form-field"
+              data-ref="input"
+              type="text"
+              name="${props.inputName}[]"
+              aria-label="${props.labelText} #${rowNumber}"
+          />
+
+          <button
+              class="repeatable-field__remove-button button"
+              data-ref="removeButton"
+              type="button"
+          >
+            ${props.removeLabel ?? 'Borrar'}
+          </button>
+        </div>
+      </li>
+    `;
+      }
+
+      function updateLimitCounter() {
+        const rowCount = refs.rowList.children.length;
+        refs.limitCounter.innerText = `${rowCount}/${props.maxRows}`;
+      }
+
+      function addRow(focusInput = false) {
+        if (refs.rowList.children.length >= props.maxRows)
+          return;
+
+        let newRow = createFromHTML(renderRow());
+        const rowRefs = getRefs(newRow);
+
+        rowRefs.removeButton.onclick = (e) => {
+          e.preventDefault();
+          removeRow(newRow);
+        }
+
+        refs.rowList.appendChild(newRow);
+
+        if (focusInput) rowRefs.input.focus();
+
+        if (refs.rowList.children.length >= props.maxRows) {
+          refs.addButton.style.display = 'none';
+        }
+
+        rowNumber += 1;
+
+        updateLimitCounter();
+      }
+
+      function removeRow(row) {
+        if (refs.rowList.children.length <= 1)
+          return;
+
+        row.remove();
+        el.focus();
+
+        updateLimitCounter();
+
+        if (refs.rowList.children.length < props.maxRows) {
+          refs.addButton.style.display = '';
+        }
+      }
+
+      function init() {
+        addRow();
+      }
+
+      refs.addButton.onclick = (e) => {
+        e.preventDefault();
+        addRow(true);
+      }
+
+      init();
+    }
+
+    document.querySelectorAll('[data-component="field-repeater"]')
+      .forEach(el => {
+        fieldRepeaterComponent(el);
+      });
+
+    function createPokemon() {
+
+    }
+
+
+
+    $("#agregar").click(function () {
+      $(".ERROR").css("display", "none");
+      var nombrePokemon = $("#nombrePokemon").val();
+      var nivelSiguienteEvolucion = $("#nivelSiguienteEvolucion").val();
+      var ordenEvolucion = $("#ordenEvolucion").val();
+      var tipo1 = $("#selectTipo1")[0].selectedOptions[0].label;
+      var tipo2 = $("#selectTipo2")[0].selectedOptions[0].label;
+      var pokemonRaza = $("#selectPokemonRaza")[0].selectedOptions[0].label;
+      var listaHabilidades = [];
+
+
+      var error = false;
+
+      if ($("#nombrePokemon").val() == "") {
+        $("#displayNombrePokemonError").css("display", "block");
+        error = true;
+      }
+      if ($("#nivelSiguienteEvolucion").val() == "") {
+        $("#displayNSEError").css("display", "block");
+        error = true;
+      }
+      if ($("#ordenEvolucion").val() == "") {
+        $("#displayOEError").css("display", "block");
+        error = true;
+      }
+      if (error == false) {
+
+
+        var auxHabilidades = $(".repeatable-field__input");
+        for (let index = 0; index < auxHabilidades.length; index++) {
+          const element = auxHabilidades[index];
+          let habilidad = element.value;  //ataque
+          listaHabilidades.push(habilidad);
+        }
+
+        json = {
+          "nombrePokemon": nombrePokemon,
+          "nivelSiguienteEvolucion": nivelSiguienteEvolucion,
+          "ordenEvolucion": ordenEvolucion,
+          "tipo1": tipo1,
+          "tipo2": tipo2,
+          "pokemonRaza": pokemonRaza,
+          "habilidades": listaHabilidades,
+        };
+       // console.log(json);
+        $.ajax({
+          url: '/api/agregarPokemon/agregar',
+          type: 'POST',
+          data: JSON.stringify(json),
+          contentType: "application/json; charset=utf-8",
+          async: false,
+          success: function (response) {
+            //check success
+            console.log("vamo niubeeeel");
+            $("#formulario").hide(1000);
+            $("#exitoAgregar").css("display", "block");
+            $("#botonera").css("display", "block");
+          },
+          error: function (response) {
+            console.log("CHOCAMO CHOCAMO");
+            $("#mensajeError").css("display", "block");
+
+          }
+        })
+        .done(function (){
+          console.log("done");
+        })
+        .fail(function (){
+          console.log("fail");
+        })
+        .always(function (){
+          console.log("always");
+        })
+      }
+    });
+
+
+  });
+
+
+
+
+
+  $.ajax({
+    url: '/api/agregarPokemon/traerTipo',
+    type: 'POST',
+    success: function (response) {
+      $.each(response, function (index, tipo) {
+        $("#selectTipo1").append(new Option(tipo.tipo, tipo.tipo))
+        $("#selectTipo2").append(new Option(tipo.tipo, tipo.tipo))
+      });
+    },
+    error: function (response) {
+      console.log(response);
+    }
+  });
+
+
+  $.ajax({
+    url: '/api/agregarPokemon/traerPokemonRaza',
+    type: 'POST',
+    success: function (response) {
+      $.each(response, function (index, pokemonRaza) {
+        $("#selectPokemonRaza").append(new Option(pokemonRaza.idPokemonRaza, pokemonRaza.idPokemonRaza))
+      });
+    },
+    error: function (response) {
+      console.log(response);
+    }
+  });
+
+
+
+
+
+
+</script>
 
 <div id="formulario">
-	<h4 style="text-align: center;">7- Agregar Pokemon</h4>
+  <h4 style="text-align: center;">7- Agregar Pokemon</h4>
 
-	<form style="max-width: 75%; position: relative; text-align: center;">
+  <form style="max-width: 75%; position: relative; text-align: center;">
     <div class="form-group row">
-      <label for="nombrePokemon" class="col-4 col-form-label">Nombre de Pokemon</label> 
+      <label for="nombrePokemon" class="col-4 col-form-label">Nombre de Pokemon</label>
       <div class="col-8">
         <input id="nombrePokemon" name="nombrePokemon" type="text" required="required" class="form-control">
+        <label id="displayNombrePokemonError" class="ERROR" style="display: none;">Complete el campo nombre de
+          pokemon</label>
       </div>
     </div>
     <div class="form-group row">
-      <label for="nivelSiguienteEvolucion" class="col-4 col-form-label">Nivel Siguiente Evolucion</label> 
+      <label for="nivelSiguienteEvolucion" class="col-4 col-form-label">Nivel Siguiente Evolucion</label>
       <div class="col-8">
-        <input id="nivelSiguienteEvolucion" name="nivelSiguienteEvolucion" type="text" required="required" class="form-control">
+        <input id="nivelSiguienteEvolucion" name="nivelSiguienteEvolucion" type="text" required="required"
+          class="form-control">
+        <label id="displayNSEError" class="ERROR" style="display: none;">Complete el campo nivel siguiente
+          evolucion</label>
       </div>
     </div>
     <div class="form-group row">
-      <label for="ordenEvolucion" class="col-4 col-form-label">Orden Evolucion</label> 
+      <label for="ordenEvolucion" class="col-4 col-form-label">Orden Evolucion</label>
       <div class="col-8">
         <input id="ordenEvolucion" name="ordenEvolucion" type="text" required="required" class="form-control">
+        <label id="displayOEError" class="ERROR" style="display: none;">Complete el campo orden evolucion</label>
       </div>
     </div>
     <div class="form-group row">
-      <label for="selectTipo1" class="col-4 col-form-label">Tipo 1</label> 
+      <label for="selectTipo1" class="col-4 col-form-label">Tipo 1</label>
       <div class="col-8">
         <select id="selectTipo1" name="selectTipo1" class="custom-select" required="required">
           <option value="-"></option>
@@ -50,7 +295,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label for="selectTipo2" class="col-4 col-form-label">Tipo 2</label> 
+      <label for="selectTipo2" class="col-4 col-form-label">Tipo 2</label>
       <div class="col-8">
         <select id="selectTipo2" name="selectTipo2" class="custom-select" required="required">
           <option value="-"></option>
@@ -58,41 +303,44 @@
       </div>
     </div>
     <div class="form-group row">
-      <label for="selectPokemonRaza" class="col-4 col-form-label">Pokemon Raza</label> 
+      <label for="selectPokemonRaza" class="col-4 col-form-label">Pokemon Raza</label>
       <div class="col-8">
         <select id="selectPokemonRaza" name="selectPokemonRaza" class="custom-select" required="required">
           <option value="1"></option>
         </select>
       </div>
     </div>
-    <div class="form-group row">
-      <label for="habilidad" class="col-4 col-form-label">Habilidades</label>
-      <div id='containerHabilidades'>
-        <form class="repeater">
-          <!--
-              The value given to the data-repeater-list attribute will be used as the
-              base of rewritten name attributes.  In this example, the first
-              data-repeater-item's name attribute would become group-a[0][text-input],
-              and the second data-repeater-item would become group-a[1][text-input]
-          -->
-          <div data-repeater-list="category-group">
-            <div data-repeater-item>
-              <input type="hidden" name="id" id="cat-id"/>
-             <input type="text" name="cat-title" />
-             
-             <input data-repeater-delete type="button" value="Delete"/>
-            </div>
-          </div>
-          <input data-repeater-create type="button" value="Add"/>
-      
-         
-      </form>
-      </div>
 
-    </div> 
+
+    <form class="repeatable-field-demo-form" action="" method="POST">
+      <h5>Habilidades</h5>
+
+      <fieldset class="repeatable-field" data-component="field-repeater" data-props='
+      {
+          "maxRows": 4,
+          "inputName": "habilidades",
+          "labelText": "Habilidad"
+      }' tabindex="0">
+
+        <ol class="repeatable-field__rows" data-ref="rowList"></ol>
+
+        <div class="repeatable-field__bottom">
+          <span class="repeatable-field__limit-counter" data-ref="limitCounter"></span>
+
+          <button class="repeatable-field__add-button button" data-ref="addButton" type="button">
+            + Agregar Habilidad
+          </button>
+        </div>
+      </fieldset>
+
+    </form>
+
+
     <div class="form-group row">
       <div class="offset-4 col-8">
-        <button name="Agregar" type="button" class="btn btn-primary">Agregar</button>
+        </br>
+        </br>
+        <button name="agregar" id="agregar" type="button" class="btn btn-primary">Agregar</button>
       </div>
     </div>
   </form>
@@ -102,12 +350,27 @@
 
 
 
+
+
+<div id="exitoAgregar" style="display: none;">
+  <h3>Pokemon Agregado</h3>
+  <p></p>
+</div>
+
+
 <div id="botonera" style="display: none;">
-	<button onclick="javascript: history.go(-1)" class="btn btn-primary">Volver</button>
-	<button id="recargar" onClick="window.location.reload();" class="btn btn-primary">Recargar</button>
+  <button onclick="javascript: history.go(-1)" class="btn btn-primary">Volver</button>
+  <button id="recargar" onClick="window.location.reload();" class="btn btn-primary">Recargar</button>
 </div>
 
-<div class="alert alert-warning" id='mensajeError' role="alert" style="display: none;" onclick="document.getElementById('mensajeError').style.display = 'none'">
-	No se ha encontrado, nombre de usuario o nombre de pokemon invalido
+<div class="alert alert-warning" id='mensajeError' role="alert" style="display: none;"
+  onclick="document.getElementById('#mensajeError').style.display = 'none'">
+  No se ha modificado, datos no correspondidos.
 </div>
 
+
+
+
+</body>
+
+</html>
