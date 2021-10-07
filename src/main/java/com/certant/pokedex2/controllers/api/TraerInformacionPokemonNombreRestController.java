@@ -1,5 +1,7 @@
 package com.certant.pokedex2.controllers.api;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -25,9 +27,14 @@ public class TraerInformacionPokemonNombreRestController {
 	@Qualifier("pokemonDatoConverter")
 	private PokemonDatoConverter pokemonDatoConverter;
 	
+
+	
 	@PostMapping("/mostrar")
 	@ResponseBody
 	public PokemonDato traerInformacionPokemonNombre(@RequestBody ObjectNode o) throws Exception {
 		return pokemonDatoConverter.modelToEntity(pokemonDatoService.traerPokemonDato(o.get("nombrePokemon").asText()));
 	}
+	
+	
+	
 }

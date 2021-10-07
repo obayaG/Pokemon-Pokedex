@@ -70,7 +70,9 @@ public class PokemonDatoService implements IPokemonDatoService{
 	@Override
 	public void actualizarNombrePokemon(String nombreABuscar, String nuevoNombreDeseado) throws Exception {
 		PokemonDato anterior=pokemonDatoRepository.traerPokemonDato(nombreABuscar);
-		if(anterior==null) throw new Exception("No existe pokemon usuario con nombre "+nombreABuscar);
+		if(anterior==null) throw new Exception("No existe pokemon usuario con nombre= "+nombreABuscar);
+		PokemonDato existeNuevo= pokemonDatoRepository.traerPokemonDato(nuevoNombreDeseado);
+		if(existeNuevo!=null) throw new Exception("Ya existe pokemon con nombre= "+nuevoNombreDeseado);
 		System.out.println("\n nombre viejo \n"+anterior);
 		anterior.setNombrePokemon(nuevoNombreDeseado);
 		pokemonDatoRepository.save(anterior);

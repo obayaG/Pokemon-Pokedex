@@ -23,13 +23,13 @@
     $("#buscar").click(function () {
       hideElement(".ERROR");
 
-      var nombreUsuario = $("#nombreUsuario").val(),
+      var nombreUsuario = $("#selectUsuario")[0].selectedOptions[0].label;
         error = false;
-
-      if ($("#nombreUsuario").val() == "") {
-        showElement("#displayNombreUsuarioError");
+        if ($("#selectUsuario")[0].selectedOptions[0].label == "-") {
+        $("#displayNombreUsuarioError").css("display", "block");
         error = true;
       }
+    
       if (error == false) {
         json = {
           "nombreUsuario": nombreUsuario,
@@ -113,15 +113,11 @@
     $("#cambiar").click(function () {
       $(".ERROR").css("display", "none");
       var nombrePokemon = $("#selectPokemon")[0].selectedOptions[0].label;
-      var nombreUsuario = $("#nombreUsuario").val();
+      var nombreUsuario = $("#selectUsuario")[0].selectedOptions[0].label;
       var nivel = $("#nivel").val();
       var error = false;
       if ($("#selectPokemon")[0].selectedOptions[0].label == "-") {
         $("#displayNombrePokemonError").css("display", "block");
-        error = true;
-      }
-      if ($("#nombreUsuario").val() == "") {
-        $("#displayNombreUsuarioError").css("display", "block");
         error = true;
       }
       if ($("#nivel").val() == "") {
@@ -161,6 +157,19 @@
       }
     });
 
+    $.ajax({
+			url: '/api/actualizarInformacionPokemonNivel/traerUsuarios',
+			type: 'POST',
+			success: function (response) {
+				$.each(response, function (index, usuario) {
+					$("#selectUsuario").append(new Option(usuario.nombre, usuario.nombre))
+				});
+			},
+			error: function (response) {
+				console.log(response);
+			}
+		});
+
 
 
   });
@@ -172,20 +181,28 @@
 </div>
 
 <div id="formulario">
-  <h4>Buscar pokemones del usuario</h4>
+</br>
+</br>
+  <h4 style="text-align:center">Buscar pokemones del usuario</h4>
 
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <p>Nombre del usuario: <input class="form-control" id="nombreUsuario" type="text" name="nombreUsuario"
-          required="required"></p>
-      <label id="displayNombreUsuarioError" class="ERROR" style="display: none;">Complete el campo nombre de
-        usuario</label>
-    </div>
-  </div>
+  <form style="max-width: 75%; position: relative; text-align: center;">
+		<div class="form-group row">
+			<label for="selectUsuario" class="col-4 col-form-label">Usuario</label>
+			<div class="col-8">
+				<select id="selectUsuario" name="selectUsuario" class="custom-select" required="required">
+					<option value="1"></option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="offset-4 col-8">
+				<button id="buscar" type="button" class="btn btn-primary">Buscar</button>
+			</div>
+		</div>
+	</form>
 
 
-  <p></p>
-  <button id="buscar" class="btn btn-primary">Buscar</button>
+
 </div>
 
 
@@ -242,6 +259,10 @@
   Nivel no puede ser menor al existente.
 </div>
 
+<div class="alert alert-warning" id='displayNombreUsuarioError' role="alert" style="display: none;"
+  onclick="document.getElementById('displayNombreUsuarioError').style.display = 'none'">
+  No hay usuario seleccionado
+</div>
 
 <div class="alert alert-warning" id='mensajeError' role="alert" style="display: none;"
   onclick="document.getElementById('mensajeError').style.display = 'none'">

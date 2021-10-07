@@ -39,16 +39,16 @@
           data: JSON.stringify(json),
           contentType: "application/json",
           success: function (data) {
-            if (data !=null){
-            $("#formulario").hide(1000);
-            $("#pokemonTable").css("display", "block");
-						for (let index = 0; index < data.length; index++) {
-							const element = data[index];
-							//llamamos la funcion para crear el pokemon en la tabla
-							createRow(element);
-						}
-            $("#botonera").css("display", "block");
-					}
+            if (data != null) {
+              $("#formulario").hide(1000);
+              $("#pokemonTable").css("display", "block");
+              for (let index = 0; index < data.length; index++) {
+                const element = data[index];
+                //llamamos la funcion para crear el pokemon en la tabla
+                createRow(element);
+              }
+              $("#botonera").css("display", "block");
+            }
 
           },
           error: function (response) {
@@ -94,23 +94,29 @@
 </div>
 
 <div id="formulario">
-  <h4>Buscar pokemon</h4>
+</br>
+</br>
+  <h5 style="text-align:center">Buscar pokemon</h5>
 
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <p>Nombre del pokemon: <input class="form-control" id="nombrePokemon" type="text" name="nombrePokemon"
-          required="required"></p>
-      <label id="displayNombrePokemonError" class="ERROR" style="display: none;">Complete el campo nombre de
-        pokemon</label>
+  <form style="max-width: 75%; position: relative; text-align: center;">
+    <div class="form-group row">
+      <label for="nombrePokemon" class="col-4 col-form-label">Nombre Pokemon</label>
+      <div class="col-8">
+        <input id="nombrePokemon" name="nombrePokemon" type="text" required="required" class="form-control">
+        <label id="displayNombrePokemonError" class="ERROR" style="display: none;">Complete el campo nombre de
+          pokemon</label>
+      </div>
     </div>
-  </div>
+    <div class="form-group row">
+      <div class="offset-4 col-8">
+        <button id="buscar" name="buscar" type="button" class="btn btn-primary">Buscar</button>
+      </div>
+    </div>
 
-
-  <p></p>
-  <button id="buscar" class="btn btn-primary">Buscar</button>
-  </div>
-
+  </form>
 </div>
+
+
 
 
 

@@ -79,19 +79,19 @@
     $("#cambiar").click(function () {
       $(".ERROR").css("display", "none");
       var nombrePokemon = $("#nombrePokemon").val();
-      var tipo1 = $("#tipo1").val();
-      var tipo2 = $("#tipo2").val();
+      var tipo1 = $("#selectTipo1")[0].selectedOptions[0].label;
+      var tipo2 = $("#selectTipo2")[0].selectedOptions[0].label;
       var error = false;
       if ($("#nombrePokemon").val() == "") {
         $("#displayNombrePokemonError").css("display", "block");
         error = true;
       }
-      if ($("#tipo1").val() == "") {
-        $("#displayTipo1").css("display", "block");
+      if ($("#selectTipo1")[0].selectedOptions[0].label == "-") {
+        $("#mensajeError2").css("display", "block");
         error = true;
       }
-      if ($("#tipo2").val() == "") {
-        $("#displayTipo2").css("display", "block");
+      if ($("#selectTipo2")[0].selectedOptions[0].label == "-") {
+        $("#mensajeError2").css("display", "block");
         error = true;
       }
       if (error == false) {
@@ -122,6 +122,21 @@
     });
 
 
+    $.ajax({
+      url: '/api/actualizarInformacionPokemonTipo/traerTipos',
+      type: 'POST',
+      success: function (response) {
+        $.each(response, function (index, tipo) {
+          $("#selectTipo1").append(new Option(tipo.tipo, tipo.tipo))
+          $("#selectTipo2").append(new Option(tipo.tipo, tipo.tipo))
+        });
+      },
+      error: function (response) {
+        console.log(response);
+      }
+    });
+
+
 
   });
 
@@ -132,22 +147,26 @@
 </div>
 
 <div id="formulario">
-  <h4>Buscar pokemon</h4>
-
-  <div class="form-row">
-
-    <div class="form-group">
-      <p>Nombre del pokemon: <input class="form-control" id="nombrePokemon" type="text" name="nombrePokemon"
-          required="required"></p>
-      <label id="displayNombrePokemonError" class="ERROR" style="display: none;">Complete el campo nombre de
-        pokemon</label>
+</br>
+</br>
+  <h5 style="text-align:center">Buscar pokemon</h5>
+  <form style="max-width: 75%; position: relative; text-align: center;">
+    <div class="form-group row">
+      <label for="nombrePokemon" class="col-4 col-form-label">Nombre Pokemon</label>
+      <div class="col-8">
+        <input id="nombrePokemon" name="nombrePokemon" type="text" required="required" class="form-control">
+        <label id="displayNombrePokemonError" class="ERROR" style="display: none;">Complete el campo nombre de
+          pokemon</label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="offset-4 col-8">
+        <button id="buscar" name="buscar" type="button" class="btn btn-primary">Buscar</button>
+      </div>
     </div>
 
-  </div>
+  </form>
 
-
-  <p></p>
-  <button id="buscar" class="btn btn-primary">Buscar</button>
 </div>
 
 
@@ -173,21 +192,31 @@
 
 
 <div id="tipos" style="display: none;">
-  <p></p>
-  <p></p>
-  <div class="form-group">
-    <p>Tipo 1: <input class="form-control" id="tipo1" type="text" name="tipo1" required="required"></p>
-    <label id="displayTipo1" class="ERROR" style="display: none;">Complete el campo de tipo 1</label>
-  </div>
-
-  <div class="form-group">
-    <p>Tipo 2: <input class="form-control" id="tipo2" type="text" name="tipo2" required="required"></p>
-    <label id="displayTipo2" class="ERROR" style="display: none;">Complete el campo de tipo 2</label>
-  </div>
-
-  <p></p>
-  <button id="cambiar" class="btn btn-primary">Cambiar</button>
+  <form style="max-width: 75%; position: relative; text-align: center;">
+    <div class="form-group row">
+      <label for="selectTipo1" class="col-4 col-form-label">Tipo 1</label>
+      <div class="col-8">
+        <select id="selectTipo1" name="selectTipo1" class="custom-select" required="required">
+          <option value="-"></option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="selectTipo2" class="col-4 col-form-label">Tipo 2</label>
+      <div class="col-8">
+        <select id="selectTipo2" name="selectTipo2" class="custom-select" required="required">
+          <option value="-"></option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="offset-4 col-8">
+        <button id="cambiar" type="button" class="btn btn-primary">Cambiar</button>
+      </div>
+    </div>
+  </form>
 </div>
+
 
 
 

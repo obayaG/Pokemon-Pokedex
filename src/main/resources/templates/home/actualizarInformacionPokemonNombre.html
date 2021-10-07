@@ -77,7 +77,7 @@
 
     $("#cambiar").click(function () {
       $(".ERROR").css("display", "none");
-      var nombrePokemon=$("#nombrePokemon").val();
+      var nombrePokemon = $("#nombrePokemon").val();
       var nuevoNombrePokemon = $("#nuevoNombrePokemon").val();
       var error = false;
       if ($("#nuevoNombrePokemon").val() == "") {
@@ -103,6 +103,7 @@
           },
           error: function (response) {
             console.log("aca hubo error");
+            $("#duplicado").css("display", "block");
           }
         });
 
@@ -122,17 +123,25 @@
 
 
 <div id="formulario">
-  
-    <h4>Buscar pokemon</h4>
-    <div class="form-group">
-      <p>Nombre del pokemon: <input  style="max-width: 50%" class="form-control" id="nombrePokemon" type="text" name="nombrePokemon"
-          required="required"></p>
-      <label id="displayNombrePokemonError" class="ERROR" style="display: none;">Complete el campo nombre de
-        pokemon</label>
+  </br>
+  </br>
+  <h5 style="text-align:center">Buscar pokemon</h5>
+  <form style="max-width: 75%; position: relative; text-align: center;">
+    <div class="form-group row">
+      <label for="nombrePokemon" class="col-4 col-form-label">Nombre Pokemon</label>
+      <div class="col-8">
+        <input id="nombrePokemon" name="nombrePokemon" type="text" required="required" class="form-control">
+        <label id="displayNombrePokemonError" class="ERROR" style="display: none;">Complete el campo nombre de
+          pokemon</label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="offset-4 col-8">
+        <button id="buscar" name="buscar" type="button" class="btn btn-primary">Buscar</button>
+      </div>
     </div>
 
-    <p></p>
-    <button id="buscar" class="btn btn-primary">Buscar</button>
+  </form>
 
 </div>
 
@@ -153,22 +162,28 @@
 </div>
 
 <div id="formulario-cambiarNombre" style="display: none;">
-    <div class="form-group" >
-      <p>Nuevo Nombre del pokemon: <input style="max-width: 50%" class="form-control" id="nuevoNombrePokemon" type="text" name="nuevoNombrePokemon"
-          required="required"></p>
-      <label id="displayNombrePokemonError2" class="ERROR" style="display: none;">Complete el campo nombre de
-        pokemon</label>
-    </div>
+  <div class="form-group">
+    <p>Nuevo Nombre del pokemon: <input style="max-width: 50%" class="form-control" id="nuevoNombrePokemon" type="text"
+        name="nuevoNombrePokemon" required="required"></p>
+    <label id="displayNombrePokemonError2" class="ERROR" style="display: none;">Complete el campo nombre de
+      pokemon</label>
+  </div>
 
-    <p></p>
-    <button id="cambiar" class="btn btn-primary">Cambiar</button>
-  
+  <p></p>
+  <button id="cambiar" class="btn btn-primary">Cambiar</button>
+
 </div>
 
 
 <div class="alert alert-warning" id='mensajeError' role="alert" style="display: none;"
   onclick="document.getElementById('mensajeError').style.display = 'none'">
   No se ha encontrado, nombre de pokemon invalido
+</div>
+
+
+<div class="alert alert-warning" id='duplicado' role="alert" style="display: none;"
+  onclick="document.getElementById('duplicado').style.display = 'none'">
+  No se modificó, nombre pokemon ya existe
 </div>
 
 <div id="exitoActualizar" style="display: none;">

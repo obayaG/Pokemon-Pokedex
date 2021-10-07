@@ -24,14 +24,10 @@
 		$("#buscar").click(function () {
 			$(".ERROR").css("display", "none");
 			var nombrePokemon = $("#nombrePokemon").val();
-			var nombreUsuario = $("#nombreUsuario").val();
+			var nombreUsuario = $("#selectUsuario")[0].selectedOptions[0].label;
 			var error = false;
 			if ($("#nombrePokemon").val() == "") {
 				$("#displayNombrePokemonError").css("display", "block");
-				error = true;
-			}
-			if ($("#nombreUsuario").val() == "") {
-				$("#displayNombreUsuarioError").css("display", "block");
 				error = true;
 			}
 			if (error == false) {
@@ -42,78 +38,105 @@
 				//	console.log(json);
 				try {
 					$.ajax({
-					url: '/api/traerPokemonPorNombre/mostrar',
-					type: 'POST',
-					dataType: 'json',
-					data: JSON.stringify(json),
-					contentType: "application/json",
-					success: function (datosDePokemonUsuario) {
-						$("#formulario").hide(1000);
-						console.log(datosDePokemonUsuario);
-						console.log(datosDePokemonUsuario.pokemonDato);
-						if (datosDePokemonUsuario != null) {
-							$("#pokemonTable").css("display", "block");
-							//llamamos la funcion para crear el pokemon en la tabla
-							var datos = "<tr><td>" + datosDePokemonUsuario.pokemonDato.nombrePokemon + "</td>"
-								+ "<td>" + datosDePokemonUsuario.pokemonDato.nivelSiguienteEvolucion + "</td>"
-								+ "<td>" + datosDePokemonUsuario.pokemonDato.ordenEvolucion + "</td>"
-								+ "<td>" + datosDePokemonUsuario.pokemonDato.tipo1.tipo + "</td>"
-								+ "<td>" + datosDePokemonUsuario.pokemonDato.tipo2.tipo + "</td><td>";
+						url: '/api/traerPokemonPorNombre/mostrar',
+						type: 'POST',
+						dataType: 'json',
+						data: JSON.stringify(json),
+						contentType: "application/json; charset=utf-8",
+						success: function (datosDePokemonUsuario) {
+							$("#formulario").hide(1000);
+							console.log(datosDePokemonUsuario);
+							console.log(datosDePokemonUsuario.pokemonDato);
+							if (datosDePokemonUsuario != null) {
+								$("#pokemonTable").css("display", "block");
+								//llamamos la funcion para crear el pokemon en la tabla
+								var datos = "<tr><td>" + datosDePokemonUsuario.pokemonDato.nombrePokemon + "</td>"
+									+ "<td>" + datosDePokemonUsuario.pokemonDato.nivelSiguienteEvolucion + "</td>"
+									+ "<td>" + datosDePokemonUsuario.pokemonDato.ordenEvolucion + "</td>"
+									+ "<td>" + datosDePokemonUsuario.pokemonDato.tipo1.tipo + "</td>"
+									+ "<td>" + datosDePokemonUsuario.pokemonDato.tipo2.tipo + "</td><td>";
 
-							//iteramos habilidades
-							for (let index = 0; index < datosDePokemonUsuario.pokemonDato.habilidades.length; index++) {
-								const element = datosDePokemonUsuario.pokemonDato.habilidades[index];
-								datos += element.habilidad + "</br>"
+								//iteramos habilidades
+								for (let index = 0; index < datosDePokemonUsuario.pokemonDato.habilidades.length; index++) {
+									const element = datosDePokemonUsuario.pokemonDato.habilidades[index];
+									datos += element.habilidad + "</br>"
+								}
+
+								datos += "</td><td>" + datosDePokemonUsuario.pokemonDato.pokemonRaza.idPokemonRaza + "</td>"
+									+ "<td>" + datosDePokemonUsuario.nivel + "</td>"
+									+ "<td>" + datosDePokemonUsuario.usuario.nombre + "</td><tr>";
+								//insertamos en dom
+								$("#pokemonTable").append(datos);
+								$("#botonera").css("display", "block");
+
+
 							}
 
-							datos += "</td><td>" + datosDePokemonUsuario.pokemonDato.pokemonRaza.idPokemonRaza + "</td>"
-								+ "<td>" + datosDePokemonUsuario.nivel + "</td>"
-								+ "<td>" + datosDePokemonUsuario.usuario.nombre + "</td><tr>";
-							//insertamos en dom
-							$("#pokemonTable").append(datos);
-							$("#botonera").css("display", "block");
-
-
+						},
+						error: function (response) {
+							$("#mensajeError").css("display", "block");
 						}
-
-					},
-					error: function (response) {
-						$("#mensajeError").css("display", "block");
-					}
-				});
+					});
 				} catch (error) {
 					alert("no se ha encontrado");
-					
+
 				}
-				
+
 			}
 		});
 
 
+		$.ajax({
+			url: '/api/traerPokemonPorNombre/traerUsuarios',
+			type: 'POST',
+			success: function (response) {
+				$.each(response, function (index, usuario) {
+					$("#selectUsuario").append(new Option(usuario.nombre, usuario.nombre))
+				});
+			},
+			error: function (response) {
+				console.log(response);
+			}
+		});
+
 
 	});
+
+
+
 </script>
 <div id="formulario">
-	<h4>Buscar pokemon y usuario</h4>
-
-	<div class="form-row">
-		<div class="form-group col-md-6">
-			<p>Nombre del pokemon: <input class="form-control" id="nombrePokemon" type="text" name="nombrePokemon"
-					required="required"></p>
-			<label id="displayNombrePokemonError" class="ERROR" style="display: none;">Complete el campo nombre de
-				pokemon</label>
+	<h4 style="text-align: center;">2-Buscar pokemon y usuario</h4>
+	</br>
+	</br>
+	</br>
+	</br>
+	<form style="max-width: 75%; position: relative; text-align: center;">
+		<div class="form-group row">
+			</br>
+			<label for="nombrePokemon" class="col-4 col-form-label">Nombre Pokemon</label>
+			<div class="col-8">
+				<input id="nombrePokemon" name="nombrePokemon" type="text" required="required" class="form-control">
+				<label id="displayNombreUsuarioError" class="ERROR" style="display: none;">Complete el campo nombre de
+					pokemon</label>
+			</div>
 		</div>
-		<div class="form-group col-md-6">
-			<p>Nombre del usuario: <input class="form-control" id="nombreUsuario" type="text" name="nombreUsuario"
-					required="required"></p>
-			<label id="displayNombreUsuarioError" class="ERROR" style="display: none;">Complete el campo nombre de
-				usuario</label>
+		<div class="form-group row">
+			<label for="selectUsuario" class="col-4 col-form-label">Usuario</label>
+			<div class="col-8">
+				<select id="selectUsuario" name="selectUsuario" class="custom-select" required="required">
+					<option value="1"></option>
+				</select>
+			</div>
 		</div>
-	</div>
+		<div class="form-group row">
+			<div class="offset-4 col-8">
+				<button id="buscar" type="button" class="btn btn-primary">Buscar</button>
+			</div>
+		</div>
+	</form>
 
 
-	<p></p>
-	<button id="buscar" class="btn btn-primary">Buscar</button>
 </div>
 
 <div id="datosPokemonUsuario">
@@ -135,10 +158,11 @@
 </div>
 
 <div id="botonera" style="display: none;">
-	<button onclick="javascript: history.go(-1)" class="btn btn-primary">Volver</button>
+	<a href="/" target="_self"><button   type="button" href="/" class="btn btn-primary">Volver</button> </a>
 	<button id="recargar" onClick="window.location.reload();" class="btn btn-primary">Recargar</button>
 </div>
 
-<div class="alert alert-warning" id='mensajeError' role="alert" style="display: none;" onclick="document.getElementById('mensajeError').style.display = 'none'">
-	No se ha encontrado, nombre de usuario o nombre de pokemon invalido
+<div class="alert alert-warning" id='mensajeError' role="alert" style="display: none;"
+	onclick="document.getElementById('mensajeError').style.display = 'none'">
+	No se ha encontrado, ese usuario no tiene ese pokemon
 </div>

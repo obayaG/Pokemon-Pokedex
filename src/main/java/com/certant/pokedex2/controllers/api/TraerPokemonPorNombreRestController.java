@@ -1,6 +1,6 @@
 package com.certant.pokedex2.controllers.api;
 
-
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.certant.pokedex2.converters.PokemonUsuarioConverter;
 import com.certant.pokedex2.entities.PokemonUsuario;
+import com.certant.pokedex2.entities.Usuario;
 import com.certant.pokedex2.services.IPokemonUsuarioService;
+import com.certant.pokedex2.services.IUsuarioService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
@@ -27,6 +29,10 @@ public class TraerPokemonPorNombreRestController {
 	@Qualifier("pokemonUsuarioConverter")
 	private PokemonUsuarioConverter pokemonUsuarioConverter;
 	
+	@Autowired
+	@Qualifier("usuarioService")
+	private IUsuarioService usuarioService;
+	
 	
 	@PostMapping("/mostrar")
 	@ResponseBody
@@ -36,4 +42,12 @@ public class TraerPokemonPorNombreRestController {
 	}
 	
 
+	@PostMapping("/traerUsuarios")
+	@ResponseBody
+	public Set<Usuario> traerUsuarios(){
+		return usuarioService.traerUsuarios();
+	}
+	
+	
+	
 }

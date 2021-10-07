@@ -1,5 +1,7 @@
 package com.certant.pokedex2.controllers.api;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,7 @@ public class ActualizarInformacionPokemonNombreRestController {
 	private PokemonDatoConverter pokemonDatoConverter;
 	
 	
+	
 	@PostMapping("/mostrarPokemon")
 	@ResponseBody
 	public PokemonDato traerPokemonPorNombre(@RequestBody ObjectNode o) throws Exception {
@@ -37,6 +40,8 @@ public class ActualizarInformacionPokemonNombreRestController {
 	public void actualizarNombrePokemon(@RequestBody ObjectNode o) throws Exception {
 		pokemonDatoService.actualizarNombrePokemon(o.get("nombrePokemon").asText(), o.get("nuevoNombrePokemon").asText());
 	}
+	
+	
 	
 
 }

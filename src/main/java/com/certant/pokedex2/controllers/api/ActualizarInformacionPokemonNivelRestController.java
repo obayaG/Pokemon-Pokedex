@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.certant.pokedex2.converters.PokemonUsuarioConverter;
 import com.certant.pokedex2.entities.PokemonUsuario;
+import com.certant.pokedex2.entities.Usuario;
 import com.certant.pokedex2.services.IPokemonUsuarioService;
+import com.certant.pokedex2.services.IUsuarioService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
@@ -27,6 +29,10 @@ public class ActualizarInformacionPokemonNivelRestController {
 	@Qualifier("pokemonUsuarioConverter")
 	private PokemonUsuarioConverter pokemonUsuarioConverter;
 	
+	@Autowired
+	@Qualifier("usuarioService")
+	private IUsuarioService usuarioService;
+	
 	@PostMapping("/mostrarPokemon")
 	@ResponseBody
 	public Set<PokemonUsuario> traerTodosLosPokemonesDelUsuario(@RequestBody ObjectNode o) throws Exception {
@@ -37,6 +43,12 @@ public class ActualizarInformacionPokemonNivelRestController {
 	@ResponseBody
 	public void actualizarInformacionPokemonNivel(@RequestBody ObjectNode o) throws Exception {
 		pokemonUsuarioService.actualizarNivelPokemon(o.get("nombrePokemon").asText(), o.get("nivel").asInt(), o.get("nombreUsuario").asText());
+	}
+	
+	@PostMapping("/traerUsuarios")
+	@ResponseBody
+	public Set<Usuario> traerUsuarios(){
+		return usuarioService.traerUsuarios();
 	}
 	
 	
