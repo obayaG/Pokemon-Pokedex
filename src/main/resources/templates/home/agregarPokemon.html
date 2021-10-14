@@ -184,7 +184,7 @@
           "pokemonRaza": pokemonRaza,
           "habilidades": listaHabilidades,
         };
-       // console.log(json);
+        console.log(json);
         $.ajax({
           url: '/api/agregarPokemon/agregar',
           type: 'POST',
@@ -193,13 +193,14 @@
           async: false,
           success: function (response) {
             //check success
-            console.log("vamo niubeeeel");
+            console.log("exito al agregar");
+            console.log(json);
             $("#formulario").hide(1000);
             $("#exitoAgregar").css("display", "block");
             $("#botonera").css("display", "block");
           },
           error: function (response) {
-            console.log("CHOCAMO CHOCAMO");
+            console.log("aca hubo error");
             $("#mensajeError").css("display", "block");
 
           }
